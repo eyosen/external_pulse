@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2016 The DirtyUnicorns Project
  * Copyright (C) 2015 The CyanogenMod Project
- * 
+ *
  * @author: Randall Rushing <randall.rushing@gmail.com>
  *
  * Contributions from The CyanogenMod Project
@@ -46,7 +46,7 @@ public class SolidLineRenderer extends Renderer {
     private byte rfk, ifk;
     private int dbValue;
     private float magnitude;
-    private float mDbFuzzFactor;
+    private int mDbFuzzFactor;
     private boolean mVertical;
     private boolean mLeftInLandscape;
     private int mWidth, mHeight, mUnits;
@@ -61,7 +61,7 @@ public class SolidLineRenderer extends Renderer {
         mPaint.setAntiAlias(true);
         mFadePaint = new Paint();
         mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
-        mDbFuzzFactor = 5f;
+        mDbFuzzFactor = 5;
         mObserver = new CMRendererObserver(handler);
         mObserver.updateSettings();
         loadValueAnimators();
@@ -133,7 +133,7 @@ public class SolidLineRenderer extends Renderer {
         if (mView.getWidth() > 0 && mView.getHeight() > 0) {
             mWidth = mView.getWidth();
             mHeight = mView.getHeight();
-            mVertical = mHeight > mWidth;
+            mVertical = mKeyguardShowing ? mHeight < mWidth : mHeight > mWidth;
             loadValueAnimators();
             if (mVertical) {
                 setVerticalPoints();
@@ -154,6 +154,7 @@ public class SolidLineRenderer extends Renderer {
 
     @Override
     public void onFFTUpdate(byte[] fft) {
+        int fudgeFactor = mKeyguardShowing ? mDbFuzzFactor * 4 : mDbFuzzFactor;
         for (int i = 0; i < mUnits; i++) {
             mValueAnimators[i].cancel();
             rfk = fft[i * 2 + 2];
@@ -166,14 +167,14 @@ public class SolidLineRenderer extends Renderer {
             if (mVertical) {
                 if (mLeftInLandscape) {
                     mValueAnimators[i].setFloatValues(mFFTPoints[i * 4],
-                            dbValue * mDbFuzzFactor);
+                            dbValue * fudgeFactor);
                 } else {
                     mValueAnimators[i].setFloatValues(mFFTPoints[i * 4],
-                            mFFTPoints[2] - (dbValue * mDbFuzzFactor));
+                            mFFTPoints[2] - (dbValue * fudgeFactor));
                 }
             } else {
                 mValueAnimators[i].setFloatValues(mFFTPoints[i * 4 + 1],
-                        mFFTPoints[3] - (dbValue * mDbFuzzFactor));
+                        mFFTPoints[3] - (dbValue * fudgeFactor));
             }
             mValueAnimators[i].start();
         }
