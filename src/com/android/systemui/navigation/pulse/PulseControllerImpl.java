@@ -237,31 +237,25 @@ public class PulseControllerImpl
         NavigationBarFrame nv = mStatusbar.getNavigationBarView() != null ?
                 mStatusbar.getNavigationBarView().getNavbarFrame() : null;
         VisualizerView vv = mStatusbar.getLsVisualizer();
-        VisualizerView va = mStatusbar.getAmVisualizer();
-        boolean allowAmPulse = va != null && va.isAttached()
-                && mAmbientPulseEnabled && mDozing;
         boolean allowLsPulse = vv != null && vv.isAttached()
                 && mLsPulseEnabled && mKeyguardShowing && !mDozing;
         boolean allowNavPulse = nv!= null && nv.isAttached()
-            && mNavPulseEnabled && !mKeyguardShowing;
+                && mNavPulseEnabled && !mKeyguardShowing;
+        boolean allowAmbPulse = vv != null && vv.isAttached()
+                && mAmbientPulseEnabled && mKeyguardShowing && mDozing;
 
         if (mKeyguardGoingAway) {
             detachPulseFrom(vv, allowNavPulse/*keep linked*/);
             return;
         }
-        if (!allowAmPulse) {
-            detachPulseFrom(vv, (allowNavPulse || allowLsPulse)/*keep linked*/);
-        }
         if (!allowNavPulse) {
-            detachPulseFrom(nv, (allowAmPulse || allowLsPulse)/*keep linked*/);
+            detachPulseFrom(nv, allowLsPulse || allowAmbPulse/*keep linked*/);
         }
-        if (!allowLsPulse) {
+        if (!allowLsPulse && !allowAmbPulse) {
             detachPulseFrom(vv, allowNavPulse/*keep linked*/);
         }
 
-        if (allowAmPulse) {
-            attachPulseTo(va);
-        } else if (allowLsPulse) {
+        if (allowLsPulse || allowAmbPulse) {
             attachPulseTo(vv);
         } else if (allowNavPulse) {
             attachPulseTo(nv);
