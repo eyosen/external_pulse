@@ -212,16 +212,16 @@ public class SolidLineRenderer extends Renderer {
         void register() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PULSE_SOLID_FUDGE_FACTOR), false, this,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_SOLID_FUDGE_FACTOR), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PULSE_SOLID_UNITS_COUNT), false, this,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_SOLID_UNITS_COUNT), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PULSE_SOLID_UNITS_OPACITY), false, this,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_SOLID_UNITS_OPACITY), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PULSE_SMOOTHING_ENABLED), false,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_SMOOTHING_ENABLED), false,
                     this,
                     UserHandle.USER_ALL);
         }
@@ -235,15 +235,15 @@ public class SolidLineRenderer extends Renderer {
             ContentResolver resolver = mContext.getContentResolver();
 
             // putFloat, getFloat is better. catch it next time
-            mDbFuzzFactor = Settings.System.getIntForUser(
-                    resolver, Settings.System.PULSE_SOLID_FUDGE_FACTOR, 5,
+            mDbFuzzFactor = Settings.Secure.getIntForUser(
+                    resolver, Settings.Secure.PULSE_SOLID_FUDGE_FACTOR, 5,
                     UserHandle.USER_CURRENT);
-            mSmoothingEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.PULSE_SMOOTHING_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+            mSmoothingEnabled = Settings.Secure.getIntForUser(resolver,
+                    Settings.Secure.PULSE_SMOOTHING_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
 
             int oldUnits = mUnits;
-            mUnits = Settings.System.getIntForUser(
-                    resolver, Settings.System.PULSE_SOLID_UNITS_COUNT, 64,
+            mUnits = Settings.Secure.getIntForUser(
+                    resolver, Settings.Secure.PULSE_SOLID_UNITS_COUNT, 64,
                     UserHandle.USER_CURRENT);
             if (mUnits != oldUnits) {
                 mFFTPoints = new float[mUnits * 4];
@@ -261,8 +261,8 @@ public class SolidLineRenderer extends Renderer {
                 mFFTAverage = null;
             }
 
-            mUnitsOpacity = Settings.System.getIntForUser(
-                    resolver, Settings.System.PULSE_SOLID_UNITS_OPACITY, 200,
+            mUnitsOpacity = Settings.Secure.getIntForUser(
+                    resolver, Settings.Secure.PULSE_SOLID_UNITS_OPACITY, 200,
                     UserHandle.USER_CURRENT);
 
             mPaint.setColor(ColorUtils.setAlphaComponent(mColor, mUnitsOpacity));

@@ -175,13 +175,13 @@ public class PulseControllerImpl
         void register() {
             ContentResolver resolver = mContext.getContentResolver();
             mContext.getContentResolver().registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PULSE_ENABLED), false, this,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_ENABLED), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
                     Settings.Secure.getUriFor(Settings.Secure.LOCKSCREEN_PULSE_ENABLED), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.PULSE_RENDER_STYLE_URI), false, this,
+                    Settings.Secure.getUriFor(Settings.Secure.PULSE_RENDER_STYLE_URI), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(
                     Settings.Secure.getUriFor(Settings.Secure.AMBIENT_PULSE_ENABLED), false, this,
@@ -190,12 +190,12 @@ public class PulseControllerImpl
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.System.getUriFor(Settings.System.PULSE_ENABLED))
+            if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.PULSE_ENABLED))
                     || uri.equals(Settings.Secure.getUriFor(Settings.Secure.LOCKSCREEN_PULSE_ENABLED))
                     || uri.equals(Settings.Secure.getUriFor(Settings.Secure.AMBIENT_PULSE_ENABLED))) {
                 updateEnabled();
                 updatePulseVisibility();
-            } else if (uri.equals(Settings.System.getUriFor(Settings.System.PULSE_RENDER_STYLE_URI))) {
+            } else if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.PULSE_RENDER_STYLE_URI))) {
                 updateRenderMode();
                 loadRenderer();
             }
@@ -208,8 +208,8 @@ public class PulseControllerImpl
 
         void updateEnabled() {
             ContentResolver resolver = mContext.getContentResolver();
-            mNavPulseEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.PULSE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+            mNavPulseEnabled = Settings.Secure.getIntForUser(resolver,
+                    Settings.Secure.PULSE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
             mLsPulseEnabled = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.LOCKSCREEN_PULSE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
             mAmbientPulseEnabled = Settings.Secure.getIntForUser(resolver,
@@ -217,8 +217,8 @@ public class PulseControllerImpl
         }
 
         void updateRenderMode() {
-            mPulseStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.PULSE_RENDER_STYLE_URI, RENDER_STYLE_CM, UserHandle.USER_CURRENT);
+            mPulseStyle = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                    Settings.Secure.PULSE_RENDER_STYLE_URI, RENDER_STYLE_CM, UserHandle.USER_CURRENT);
         }
     };
 
