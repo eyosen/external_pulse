@@ -96,7 +96,7 @@ public class VisualizerStreamHandler {
      * Links the visualizer to a player
      */
     public final void link() {
-        mUiOffloadThread.submit(() -> {
+        mUiOffloadThread.execute(() -> {
             pause();
             resetAnalyzer();
 
