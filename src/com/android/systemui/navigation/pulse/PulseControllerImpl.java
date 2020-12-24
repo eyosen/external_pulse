@@ -61,6 +61,7 @@ import com.android.systemui.Dependency;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.CommandQueue.Callbacks;
 import com.android.systemui.statusbar.phone.NavigationBarFrame;
+import com.android.systemui.statusbar.phone.NavigationBarView;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.PulseController;
@@ -280,6 +281,10 @@ public class PulseControllerImpl
         }
     }
 
+    private NavigationBarView getNavigationBarView() {
+        return mStatusbar != null ? mStatusbar.getNavigationBarView() : null;
+    }
+
     @Inject
     public PulseControllerImpl(Context context, @Named(MAIN_HANDLER_NAME) Handler handler) {
         mContext = context;
@@ -358,6 +363,8 @@ public class PulseControllerImpl
         final boolean isRendering = shouldDrawPulse();
         if (isRendering) {
             mStreamHandler.pause();
+        } else {
+            getNavigationBarView().hideHomeHandle(false);
         }
         if (mRenderer != null) {
             mRenderer.destroy();
@@ -486,6 +493,7 @@ public class PulseControllerImpl
                     mRenderer.onVisualizerLinkChanged(false);
                 }
                 mPulseView.postInvalidate();
+                getNavigationBarView().hideHomeHandle(false);
                 notifyStateListeners(false);
             }
         }
@@ -523,6 +531,7 @@ public class PulseControllerImpl
                 mStreamHandler.unlink();
                 setVisualizerLocked(false);
                 mLinked = false;
+                getNavigationBarView().hideHomeHandle(false);
             }
         }
     }
@@ -543,6 +552,7 @@ public class PulseControllerImpl
                 }
                 if (mRenderer != null) {
                     mRenderer.onVisualizerLinkChanged(true);
+                    getNavigationBarView().hideHomeHandle(true);
                 }
             }
         }
