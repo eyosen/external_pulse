@@ -456,6 +456,7 @@ public class PulseControllerImpl
      */
     private boolean isUnlinkRequired() {
         boolean result = mPowerSaveModeEnabled
+                || !mIsMediaPlaying
                 || mMusicStreamMuted
                 || mScreenPinningEnabled
                 || !mAttached;
